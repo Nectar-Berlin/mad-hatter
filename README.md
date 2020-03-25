@@ -5,7 +5,7 @@
 ## Usage
 
 ```sh
-yarn run bootstrap
+npm run bootstrap
 ```
 
 ## Packages
