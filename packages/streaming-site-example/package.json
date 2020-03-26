@@ -1,0 +1,7 @@
+{
+  "name": "@whiterabbit/streaming-site",
+  "version": "1.0.0",
+  "description": "Example of the streaming site for Whiterabbit",
+  "private": true,
+  "license": "MIT"
+}
