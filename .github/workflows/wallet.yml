@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - feat/init-ci
     paths:
       - 'packages/wallet/*'
       - '.github/workflows/wallet.yml'
@@ -18,6 +17,24 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Cache node modules for wallet
+      uses: actions/cache@v1
+      env:
+        cache-name: cache-node-modules
+      with:
+        path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('packages/wallet/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+
+    - name: Install Dependencies
+      run: cd packages/wallet/ && npm install
+
+    - name: Build
+      run: cd packages/wallet/ && npm run build
+
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -27,7 +44,7 @@ jobs:
 
     - name: Copy files to AWS S3
       run: |
-        aws s3 sync ./packages/wallet/ s3://wr.leap.rocks  --acl public-read
+        aws s3 sync ./packages/wallet/build s3://wr.leap.rocks  --acl public-read
 
     - name: Invalidate AWS CloudFront distribution
       run: |
