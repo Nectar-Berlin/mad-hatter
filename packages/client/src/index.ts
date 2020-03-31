@@ -8,6 +8,14 @@ const frameCss = `
   display: none;  
   top: 0;`;
 
+const closeHandleCss = `
+  right: 0;
+  position: absolute;
+  background: lightgray;
+  padding: 2px 5px;
+  cursor: pointer ;
+  top: 401;`;
+
 const loaderCss = `
   display: flex;
   justify-content: center;
@@ -39,8 +47,17 @@ class WhiteRabbitClient {
         document.body.removeChild(loader);
         resolve();
       });
+      const closeHandle = document.createElement('div');
+      closeHandle.appendChild(document.createTextNode('×'));
+      closeHandle.style.cssText = closeHandleCss;
+      closeHandle.addEventListener('click', () => {
+        document.body.removeChild(this.iframe);
+        document.body.removeChild(closeHandle);
+        this.iframe = null;
+      });
       
       document.body.appendChild(this.iframe);
+      document.body.appendChild(closeHandle);
     });
   }
 
