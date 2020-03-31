@@ -1,4 +1,4 @@
-import Client from './dist';
+import Client from './';
 
 describe('#imdbToToken', () => {
   test('should prefix with 01', () => {
