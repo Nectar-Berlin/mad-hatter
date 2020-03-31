@@ -16,11 +16,11 @@ const loaderCss = `
 class WhiteRabbitClient {
   private iframe: any = null;
 
-  url(tokenId) {
+  private url(tokenId) {
     return `https://wr.leap.rocks/title/${tokenId}`;
   }
 
-  ensureIFrame(url) {
+  private ensureIFrame(url) {
     if (this.iframe) {
       return Promise.resolve(this.iframe);
     }
@@ -30,7 +30,7 @@ class WhiteRabbitClient {
       loader.style.cssText = frameCss + loaderCss;
       loader.appendChild(document.createTextNode('Loading..'));
       document.body.appendChild(loader);
-      
+
       this.iframe = document.createElement('iframe');
       this.iframe.src = url;
       this.iframe.style.cssText = frameCss;
@@ -44,8 +44,16 @@ class WhiteRabbitClient {
     });
   }
 
-  async requestPayment(tokenId: string) {
-    await this.ensureIFrame(this.url(tokenId));
+  requestPayment(imdbOrTokenId: string) {
+    const tokenId = imdbOrTokenId.startsWith('tt') 
+      ? this.imdbToToken(imdbOrTokenId) 
+      : imdbOrTokenId;
+
+    return this.ensureIFrame(this.url(tokenId));
+  }
+
+  imdbToToken(imdbId: string) {
+    return `01${imdbId.replace('tt', '').padStart(8, '0')}`;
   }
 }
 

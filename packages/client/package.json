@@ -7,9 +7,13 @@
   "scripts": {
     "prebuild": "rm -rf dist",
     "build": "tsc -d index.ts --outDir dist/",
-    "prepublish": "npm run prebuild && npm run build"
+    "prepublish": "npm run prebuild && npm run build",
+    "test": "jest"
   },
   "devDependencies": {
+    "@types/jest": "^25.1.4",
+    "jest": "^25.2.4",
+    "ts-jest": "^25.3.0",
     "typescript": "^3.8.3"
   }
 }
