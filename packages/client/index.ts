@@ -1,4 +1,18 @@
 
+const frameCss = `
+  height: 400px;
+  width: 300px;
+  right: 0;
+  position: absolute;
+  border:1px solid lightgray;
+  display: none;  
+  top: 0;`;
+
+const loaderCss = `
+  display: flex;
+  justify-content: center;
+  align-items: center;`;
+
 class WhiteRabbitClient {
   private iframe: any = null;
 
@@ -12,11 +26,20 @@ class WhiteRabbitClient {
     }
 
     return new Promise((resolve) => {
+      const loader = document.createElement('div');
+      loader.style.cssText = frameCss + loaderCss;
+      loader.appendChild(document.createTextNode('Loading..'));
+      document.body.appendChild(loader);
+      
       this.iframe = document.createElement('iframe');
       this.iframe.src = url;
-      this.iframe.style.cssText = 'height:400px; width:200px; border:1px solid red';
-      this.iframe.addEventListener('load', () => resolve());
-
+      this.iframe.style.cssText = frameCss;
+      this.iframe.addEventListener('load', () => {
+        this.iframe.style.cssText += 'display: block';
+        document.body.removeChild(loader);
+        resolve();
+      });
+      
       document.body.appendChild(this.iframe);
     });
   }
