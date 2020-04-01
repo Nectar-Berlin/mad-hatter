@@ -1,5 +1,5 @@
 {
-  "name": "@whiterabbit/streaming-site",
+  "name": "@whiterabbitjs/streaming-site",
   "version": "1.0.0",
   "description": "Example of the streaming site for Whiterabbit",
   "private": true,
@@ -9,7 +9,7 @@
     "build": "parcel build index.html"
   },
   "dependencies": {
-    "@whiterabbit/client": "^1.0.0",
+    "@whiterabbitjs/client": "^1.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },

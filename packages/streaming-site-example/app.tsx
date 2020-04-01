@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import WhiteRabbitClient from '@whiterabbit/client';
+import WhiteRabbitClient from '@whiterabbitjs/client';
 
 const StreamingApp = () => {
 

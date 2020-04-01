@@ -12,7 +12,7 @@ npm run bootstrap
 
 | Package                                   | Description                                                             |
 | ----------------------------------------- | ----------------------------------------------------------------------- |
-| [`@whiterabbit/client`](/packages/client) | Client JS library for streaming sites |
-| [`@whiterabbit/contracts`](/packages/contracts) | Smart contracts |
-| [`@whiterabbit/streaming-site-example`](/packages/streaming-site-example) | Example of the streaming site using Whiterabbit tech |
-| [`@whiterabbit/wallet`](/packages/wallet) | Payment wallet |
+| [`@whiterabbitjs/client`](/packages/client) | Client JS library for streaming sites |
+| [`@whiterabbitjs/contracts`](/packages/contracts) | Smart contracts |
+| [`@whiterabbitjs/streaming-site-example`](/packages/streaming-site-example) | Example of the streaming site using Whiterabbit tech |
+| [`@whiterabbitjs/wallet`](/packages/wallet) | Payment wallet |

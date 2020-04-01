@@ -4,16 +4,16 @@ Simple frontend library to integrate WhiteRabbit on your streaming website
 
 ## Usage
 
-Install `@whiterabbit/client` package
+Install `@whiterabbitjs/client` package
 
 ```sh
-npm install --save @whiterabbit/client
+npm install --save @whiterabbitjs/client
 ```
 
 Then use it on your webpage
 
 ```js
-import WhiteRabbitClient from '@whiterabbit/client';
+import WhiteRabbitClient from '@whiterabbitjs/client';
 
 WhiteRabbitClient.requestPayment('tt8367814');
 ```
