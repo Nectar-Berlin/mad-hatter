@@ -8,6 +8,12 @@
 npm run bootstrap
 ```
 
+### Start local environment (local wallet, example streaming site)
+
+```sh
+npm run start-local
+```
+
 ## Packages
 
 | Package                                   | Description                                                             |

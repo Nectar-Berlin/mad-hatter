@@ -23,9 +23,16 @@ const loaderCss = `
 
 class WhiteRabbitClient {
   private iframe: any = null;
+  private host: string;
+
+  constructor(host: string = 'https://wr.leap.rocks') {
+    console.log({ host });
+    this.host = host;
+  }
 
   private url(tokenId) {
-    return `https://wr.leap.rocks/title/${tokenId}`;
+    console.log(this.host);
+    return `${this.host}/title/${tokenId}`;
   }
 
   private ensureIFrame(url) {
@@ -74,4 +81,4 @@ class WhiteRabbitClient {
   }
 }
 
-export default new WhiteRabbitClient();
+export default WhiteRabbitClient;

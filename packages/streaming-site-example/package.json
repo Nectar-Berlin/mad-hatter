@@ -6,6 +6,8 @@
   "license": "MIT",
   "scripts": {
     "start": "parcel index.html",
+    "start-local": "WR_WALLET_HOST=http://localhost:3000 npm start",
+    "start-example": "npm start",
     "build": "parcel build index.html"
   },
   "dependencies": {

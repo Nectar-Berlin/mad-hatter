@@ -15,14 +15,24 @@ Then use it on your webpage
 ```js
 import WhiteRabbitClient from '@whiterabbitjs/client';
 
-WhiteRabbitClient.requestPayment('tt8367814');
+const client = new WhiteRabbitClient();
+
+client.requestPayment('tt8367814');
 ```
 
 ## API
 
+`new WhiteRabbitClient(whiterabbitHost)`
+\
+Create a new client instance.
+\
+Arguments:
+
+- `whiterabbitHost` — (optional) host of whiterabbit wallet instance. Defaults to `https://wr.leap.rocks`.
+
 `requestPayment(tokenId)`
 \
-Request a payment for the movie referenced by given WhiteRabbit token (TBD)
+Request a payment for the movie referenced by given WhiteRabbit token (TBD).
 
 `requestPayment(imdbId)`
 \
