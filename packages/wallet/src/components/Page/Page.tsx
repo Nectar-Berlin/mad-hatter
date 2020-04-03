@@ -15,7 +15,7 @@ const PageContainer = styled.main<{ backgroundImage?: string, fullscreen?: boole
   background: linear-gradient(
     rgba(0, 0, 0, 0.4), 
     rgba(0, 0, 0, 0.9)
-  ), no-repeat center/100% url(${({ backgroundImage }) => backgroundImage});
+  ), no-repeat top/100% url(${({ backgroundImage }) => backgroundImage});
 
   ${({ fullscreen }) => fullscreen ? `
     position: absolute;
