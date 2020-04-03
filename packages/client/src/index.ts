@@ -21,17 +21,20 @@ const loaderCss = `
   justify-content: center;
   align-items: center;`;
 
+enum IdTypes {
+  NA,
+  IMDB,
+};
+
 class WhiteRabbitClient {
   private iframe: any = null;
   private host: string;
 
   constructor(host: string = 'https://wr.leap.rocks') {
-    console.log({ host });
     this.host = host;
   }
 
   private url(tokenId) {
-    console.log(this.host);
     return `${this.host}/title/${tokenId}`;
   }
 
@@ -70,14 +73,22 @@ class WhiteRabbitClient {
 
   requestPayment(imdbOrTokenId: string) {
     const tokenId = imdbOrTokenId.startsWith('tt') 
-      ? this.imdbToToken(imdbOrTokenId) 
+      ? WhiteRabbitClient.imdbToToken(imdbOrTokenId) 
       : imdbOrTokenId;
 
     return this.ensureIFrame(this.url(tokenId));
   }
 
-  imdbToToken(imdbId: string) {
-    return `01${imdbId.replace('tt', '').padStart(8, '0')}`;
+  static imdbToToken(imdbId: string) {
+    return String((Number(imdbId.replace('tt', '')) << 8) + IdTypes.IMDB);
+  }
+
+  static tokenToImdb(tokenId: string) {
+    const type:number = Number(tokenId) % 256;
+    if (type !== IdTypes.IMDB) {
+      throw Error('Invalid type. Should be 1 for IMDB ID');
+    }
+    return String(Number(tokenId) >> 8);
   }
 }
 
