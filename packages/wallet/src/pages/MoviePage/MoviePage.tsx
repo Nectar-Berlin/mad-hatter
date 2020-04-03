@@ -67,7 +67,7 @@ const getMovieMetadata = async (imdbId: string): Promise<MovieData> => {
     `https://api.themoviedb.org/3/movie/tt${imdbId}/credits?api_key=${TMD_API_KEY}`
   ).then(resp => resp.json());
 
-  const productionCompanies = production_companies.map((c: any) => c.name);
+  const productionCompanies = production_companies.slice(0, 2).map((c: any) => c.name);
   const actors = cast.slice(0, 3).map((a: any) => a.name);
   const producer = crew.find((c: any) => c.job === 'Producer').name;
   const director = crew.find((c: any) => c.job === 'Director').name;
