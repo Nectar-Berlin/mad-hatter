@@ -8,7 +8,7 @@ const StreamingApp = () => {
 
   const openWhiteRabbit = () => {
     console.log('Who is there?');
-    client.requestPayment('132');
+    client.requestPayment('2142160385');
   };
 
   return (

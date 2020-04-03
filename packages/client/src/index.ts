@@ -1,10 +1,10 @@
 
 const frameCss = `
-  height: 400px;
-  width: 300px;
+  height: 500px;
+  width: 400px;
   right: 0;
   position: absolute;
-  border:1px solid lightgray;
+  border: none;
   display: none;  
   top: 0;`;
 
@@ -14,7 +14,7 @@ const closeHandleCss = `
   background: lightgray;
   padding: 2px 5px;
   cursor: pointer ;
-  top: 401;`;
+  top: 501;`;
 
 const loaderCss = `
   display: flex;
@@ -35,7 +35,7 @@ class WhiteRabbitClient {
   }
 
   private url(tokenId) {
-    return `${this.host}/title/${tokenId}`;
+    return `${this.host}/movie/${tokenId}`;
   }
 
   private ensureIFrame(url) {

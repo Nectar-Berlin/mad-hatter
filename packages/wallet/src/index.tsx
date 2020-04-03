@@ -4,7 +4,26 @@ import { xdai } from '@burner-wallet/assets';
 import BurnerCore from '@burner-wallet/core';
 import { LocalSigner } from '@burner-wallet/core/signers';
 import { XDaiGateway, } from '@burner-wallet/core/gateways';
-import ModernUI from '@burner-wallet/modern-ui';
+import { createGlobalStyle } from 'styled-components'
+import WhiteRabbitUI from './WhiteRabbitUI';
+
+
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    background: #000000 !important;
+  }
+
+  header,
+  header div {
+    color: rgba(255, 255, 255, 0.9) !important;
+  }
+
+  header button {
+    border: none;
+  }
+  
+`;
 
 const core = new BurnerCore({
   signers: [new LocalSigner()],
@@ -14,13 +33,16 @@ const core = new BurnerCore({
   assets: [xdai],
 });
 
-const BurnerWallet = () =>
-  <ModernUI
-    core={core}
-    plugins={[]}
-  />
+const WhiteRabbitWallet = () =>
+  <React.Fragment>
+    <GlobalStyle/>
+    <WhiteRabbitUI
+      title="White Rabbit"
+      core={core}
+      plugins={[]}
+    />
+  </React.Fragment>
 
 
-
-ReactDOM.render(<BurnerWallet />, document.getElementById('root'));
+ReactDOM.render(<WhiteRabbitWallet />, document.getElementById('root'));
 
