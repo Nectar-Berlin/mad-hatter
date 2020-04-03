@@ -1,15 +1,14 @@
-import React, { ChangeEvent, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import styled from 'styled-components';
-import { withBurner, BurnerContext, DataProviders } from '@burner-wallet/ui-core';
-import { Asset, Account, SendData, AccountBalanceData } from '@burner-wallet/types';
+import { withBurner, BurnerContext } from '@burner-wallet/ui-core';
 import Button from '../../components/Button';
 import Page from '../../components/Page';
 import WhiteRabbitClient from '@whiterabbitjs/client';
 
 const { tokenToImdb } = WhiteRabbitClient;
 
-type MoviePagePageProps = BurnerContext & RouteComponentProps<{ to?: string }>;
+type MoviePagePageProps = BurnerContext & RouteComponentProps;
 
 const TMD_API_KEY = 'b1854cc7cd8f2e29da75a04a3c946e44';
 
@@ -83,7 +82,7 @@ const getMovieMetadata = async (imdbId: string): Promise<MovieData> => {
 }
 
 
-const MoviePage: React.FC<MoviePagePageProps> = ({ actions, assets, location, t }) => {
+const MoviePage: React.FC<MoviePagePageProps> = ({ actions, location }) => {
   const [movieData, setMovieData] = useState<MovieData>();
   const [isLoading, setIsLoading] = useState<boolean>();
   const { pathname } = location;
@@ -97,7 +96,6 @@ const MoviePage: React.FC<MoviePagePageProps> = ({ actions, assets, location, t 
   }
 
   const imdbId = tokenToImdb(tokenId);  
-
 
   if (!movieData) {
     if (!isLoading) {
