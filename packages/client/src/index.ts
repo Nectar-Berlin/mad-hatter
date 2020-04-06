@@ -34,11 +34,11 @@ class WhiteRabbitClient {
     this.host = host;
   }
 
-  private url(tokenId) {
+  private url(tokenId: string) {
     return `${this.host}/movie/${tokenId}`;
   }
 
-  private ensureIFrame(url) {
+  private ensureIFrame(url: string) {
     if (this.iframe) {
       return Promise.resolve(this.iframe);
     }
