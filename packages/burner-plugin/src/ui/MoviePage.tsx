@@ -124,14 +124,14 @@ const MoviePage: React.FC<PluginPageContext & RouteComponentProps> = ({ plugin, 
           setIsLoading(false);
         });
         const movieContract = (plugin as WhiteRabbitPlugin).getMovieContract();
-        movieContract.methods.ownerOf(tokenId).call().then((owner: string) =>
+        movieContract.methods.ownerOf(tokenId).call().then((owner: string) => {
           setMovieOwner(owner)
-        );
+        });
       }
     }  
   });
 
-  if (!movieData) { 
+  if (!movieData || !movieOwner) { 
     return (
       <Page>
         Loading..
