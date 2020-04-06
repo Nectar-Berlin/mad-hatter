@@ -1,13 +1,13 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-
 import styled from 'styled-components';
-import { withBurner, BurnerContext, DataProviders } from '@burner-wallet/ui-core';
-import { Asset, Account, SendData, AccountBalanceData, PluginPageContext, ButtonProps, PageProps } from '@burner-wallet/types';
-const classes = require('./MoviePage.module.css');
 
+import { SendData, AccountBalanceData, PluginPageContext, ButtonProps, PageProps } from '@burner-wallet/types';
+import { withBurner, DataProviders } from '@burner-wallet/ui-core';
 import WhiteRabbitClient from '@whiterabbitjs/client';
+
 import WhiteRabbitPlugin from '../WhiteRabbitPlugin';
+const classes = require('./MoviePage.module.css');
 
 type MovieData = {
   title: string;
@@ -45,6 +45,16 @@ const ActionButtons = styled.div`
   justify-content: center;
   margin: 0 -14px;
   margin-top: 42px;
+`;
+
+const MessagePage = styled.div`
+  padding: 0;
+  background-color: black;
+  color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
 `;
 
 const ImageBackdrop = styled.div<{ backgroundImage?: string }>`
@@ -90,9 +100,10 @@ const getMovieMetadata = async (imdbId: string): Promise<MovieData> => {
 
 type PageType = React.FC<PageProps & { className?: string }>;
 
-const MoviePage: React.FC<PluginPageContext & RouteComponentProps> = ({ plugin, actions, assets, burnerComponents, location }) => {
+const MoviePage: React.FC<MoviePageContext> = ({ plugin, actions, assets, burnerComponents, location }) => {
   const [movieData, setMovieData] = useState<MovieData>();
   const [movieOwner, setMovieOwner] = useState<string>();
+  const [noSuchToken, setNoSuchToken] = useState<boolean>();
   const [isLoading, setIsLoading] = useState<boolean>();
 
   const Page = burnerComponents.Page as PageType;
@@ -109,9 +120,9 @@ const MoviePage: React.FC<PluginPageContext & RouteComponentProps> = ({ plugin, 
 
   if (!imdbId) {
     return (
-      <Page>
+      <MessagePage>
         Invalid movie token Id
-      </Page>
+      </MessagePage>
     );
   }
   
@@ -126,16 +137,27 @@ const MoviePage: React.FC<PluginPageContext & RouteComponentProps> = ({ plugin, 
         const movieContract = (plugin as WhiteRabbitPlugin).getMovieContract();
         movieContract.methods.ownerOf(tokenId).call().then((owner: string) => {
           setMovieOwner(owner)
+        }).catch((e: any) => {
+          console.error(e);
+          setNoSuchToken(true);
         });
       }
     }  
   });
 
+  if (noSuchToken) { 
+    return (
+      <MessagePage>
+        Movie token is not registered on the network
+      </MessagePage>
+    );
+  }
+
   if (!movieData || !movieOwner) { 
     return (
-      <Page>
+      <MessagePage>
         Loading..
-      </Page>
+      </MessagePage>
     );
   }
 
