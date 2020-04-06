@@ -6,6 +6,7 @@ import { SendData, AccountBalanceData, PluginPageContext, ButtonProps, PageProps
 import { withBurner, DataProviders } from '@burner-wallet/ui-core';
 import WhiteRabbitClient from '@whiterabbitjs/client';
 
+import config from '../config.json';
 import WhiteRabbitPlugin from '../WhiteRabbitPlugin';
 const classes = require('./MoviePage.module.css');
 
@@ -23,8 +24,6 @@ type PageType = React.FC<PageProps & { className?: string }>;
 type MoviePageContext = PluginPageContext & RouteComponentProps & {
   plugin: WhiteRabbitPlugin;
 };
-
-const TMD_API_KEY = 'b1854cc7cd8f2e29da75a04a3c946e44';
 
 const MovieDetailsPanel = styled.div`
   margin-top: auto;
@@ -80,11 +79,11 @@ const { AccountBalance } = DataProviders;
 
 const getMovieMetadata = async (imdbId: string): Promise<MovieData> => {
   const { title, poster_path, production_companies } = await fetch(
-    `https://api.themoviedb.org/3/movie/tt${imdbId}?api_key=${TMD_API_KEY}`
+    `https://api.themoviedb.org/3/movie/tt${imdbId}?api_key=${config.theMovieDbApiKey}`
   ).then(resp => resp.json());
 
   const { cast, crew } = await fetch(
-    `https://api.themoviedb.org/3/movie/tt${imdbId}/credits?api_key=${TMD_API_KEY}`
+    `https://api.themoviedb.org/3/movie/tt${imdbId}/credits?api_key=${config.theMovieDbApiKey}`
   ).then(resp => resp.json());
 
   const productionCompanies = production_companies.slice(0, 2).map((c: any) => c.name);

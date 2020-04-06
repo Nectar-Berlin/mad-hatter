@@ -1,5 +1,6 @@
 {
   "networkId": "100",
   "tokenAddress": "0xe69170241be555b57dd67ede81307ab01eaaa443",
-  "paymentAmount": "0.01"
+  "paymentAmount": "0.01",
+  "theMovieDbApiKey": "b1854cc7cd8f2e29da75a04a3c946e44"
 }
