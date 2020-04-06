@@ -2,12 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { xdai } from '@burner-wallet/assets';
 import BurnerCore from '@burner-wallet/core';
+import ModernUI from '@burner-wallet/modern-ui';
 import { LocalSigner } from '@burner-wallet/core/signers';
 import { XDaiGateway, } from '@burner-wallet/core/gateways';
 import { createGlobalStyle } from 'styled-components'
-import WhiteRabbitUI from './WhiteRabbitUI';
-
-
+import WhiteRabbitPlugin from '@whiterabbitjs/burner-plugin';
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -36,10 +35,12 @@ const core = new BurnerCore({
 const WhiteRabbitWallet = () =>
   <React.Fragment>
     <GlobalStyle/>
-    <WhiteRabbitUI
+    <ModernUI
       title="White Rabbit"
       core={core}
-      plugins={[]}
+      plugins={[
+        new WhiteRabbitPlugin()
+      ]}
     />
   </React.Fragment>
 
