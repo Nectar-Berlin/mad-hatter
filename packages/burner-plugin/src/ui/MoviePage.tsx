@@ -18,7 +18,11 @@ type MovieData = {
   productionCompanies: Array<string>;
 };
 
-type MoviePageContext = PluginPageContext & RouteComponentProps;
+type PageType = React.FC<PageProps & { className?: string }>;
+
+type MoviePageContext = PluginPageContext & RouteComponentProps & {
+  plugin: WhiteRabbitPlugin;
+};
 
 const TMD_API_KEY = 'b1854cc7cd8f2e29da75a04a3c946e44';
 
@@ -98,8 +102,6 @@ const getMovieMetadata = async (imdbId: string): Promise<MovieData> => {
   };
 }
 
-type PageType = React.FC<PageProps & { className?: string }>;
-
 const MoviePage: React.FC<MoviePageContext> = ({ plugin, actions, assets, burnerComponents, location }) => {
   const [movieData, setMovieData] = useState<MovieData>();
   const [movieOwner, setMovieOwner] = useState<string>();
@@ -134,7 +136,7 @@ const MoviePage: React.FC<MoviePageContext> = ({ plugin, actions, assets, burner
           setMovieData(data);
           setIsLoading(false);
         });
-        const movieContract = (plugin as WhiteRabbitPlugin).getMovieContract();
+        const movieContract = plugin.getMovieContract();
         movieContract.methods.ownerOf(tokenId).call().then((owner: string) => {
           setMovieOwner(owner)
         }).catch((e: any) => {
@@ -173,7 +175,7 @@ const MoviePage: React.FC<MoviePageContext> = ({ plugin, actions, assets, burner
   `;
 
   const asset = assets[0];
-  const value = '0.01';
+  const value = plugin.getPaymentAmount();
 
   const send = () => {
     const sendProps: SendData = {
