@@ -1,33 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import WhiteRabbitClient from '@whiterabbitjs/client';
 
 const client = new WhiteRabbitClient(process.env.WR_WALLET_HOST);
 
-type WhiteRabbitMessage = MessageEvent & {
-  whiterabbit: {
-    status: boolean;
-  }
-};
-
 const StreamingApp = () => {
+  const [paymentStatus, setPaymentStatus] = useState();
 
   const openWhiteRabbit = () => {
-    client.requestPayment('2142160385');
-
-    window.addEventListener('message', (event) => {
-      if (!event.data || !event.data.whiterabbit) return;
-      const { whiterabbit } = event.data;
-      console.log(whiterabbit);
-      if (!whiterabbit.status) {
-        client.closeIFrame();
-      }
+    client.requestPayment('2142160385').then(({ status }: { status: boolean }) => {
+      setPaymentStatus(status);
     });
   };
 
   return (
     <div>
       <button onClick={openWhiteRabbit}>Knock-knock</button>
+      {paymentStatus !== undefined &&
+        <div>Payment: {paymentStatus ? 'success' : 'declined'}</div>
+      }
     </div>
   );
 }

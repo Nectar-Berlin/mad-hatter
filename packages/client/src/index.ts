@@ -26,6 +26,12 @@ enum IdTypes {
   IMDB,
 };
 
+type WhiteRabbitMessage = MessageEvent & {
+  whiterabbit: {
+    status: boolean;
+  }
+};
+
 class WhiteRabbitClient {
   private iframe: any = null;
   private closeHandle: any = null;
@@ -78,14 +84,28 @@ class WhiteRabbitClient {
     document.body.removeChild(this.iframe);
     document.body.removeChild(this.closeHandle);
     this.iframe = null;
+    this.closeHandle = null;
   }
 
-  requestPayment(imdbOrTokenId: string) {
+  async requestPayment(imdbOrTokenId: string) {
     const tokenId = imdbOrTokenId.startsWith('tt') 
       ? WhiteRabbitClient.imdbToToken(imdbOrTokenId) 
       : imdbOrTokenId;
 
-    return this.ensureIFrame(this.url(tokenId));
+    await this.ensureIFrame(this.url(tokenId));
+
+    return new Promise((resolve, reject) => {
+      const messageHandler = (event) => {
+        if (!event.data || !event.data.whiterabbit) return;
+        const { whiterabbit } = event.data as WhiteRabbitMessage;
+        console.log(whiterabbit);
+        this.closeIFrame();
+        window.removeEventListener('message', messageHandler);
+        resolve({ status: whiterabbit.status });
+      };
+
+      window.addEventListener('message', messageHandler);
+    });
   }
 
   static imdbToToken(imdbId: string) {
