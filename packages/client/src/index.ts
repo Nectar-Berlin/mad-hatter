@@ -98,7 +98,6 @@ class WhiteRabbitClient {
       const messageHandler = (event) => {
         if (!event.data || !event.data.whiterabbit) return;
         const { whiterabbit } = event.data as WhiteRabbitMessage;
-        console.log(whiterabbit);
         this.closeIFrame();
         window.removeEventListener('message', messageHandler);
         resolve({ status: whiterabbit.status });
