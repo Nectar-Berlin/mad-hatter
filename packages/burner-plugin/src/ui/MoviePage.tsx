@@ -105,7 +105,7 @@ const getMovieMetadata = async (imdbId: string): Promise<MovieData> => {
   };
 }
 
-const MoviePage: React.FC<MoviePageContext> = ({ plugin, actions, assets, burnerComponents, location }) => {
+const MoviePage: React.FC<MoviePageContext> = ({ plugin, accounts, actions, assets, burnerComponents, location }) => {
   const [movieData, setMovieData] = useState<MovieData>();
   const [movieOwner, setMovieOwner] = useState<string>();
   const [noSuchToken, setNoSuchToken] = useState<boolean>();
@@ -175,10 +175,22 @@ const MoviePage: React.FC<MoviePageContext> = ({ plugin, actions, assets, burner
 
   const PrimaryButton = styled(ActionButton)`
     background: #fadaaa;
+
+    &:disabled {
+      background: gray;
+    }
+  `;
+
+  const ButtonHint = styled.span`
+    position: absolute;
+    margin-left: 14px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 5px;
   `;
 
   const asset = assets[0];
   const value = plugin.getPaymentAmount();
+  const [account] = accounts;
 
   const send = () => {
     const sendProps: SendData = {
@@ -215,17 +227,21 @@ const MoviePage: React.FC<MoviePageContext> = ({ plugin, actions, assets, burner
         </MovieDetailsPanel>      
         <AccountBalance
           asset={asset}
+          account={account}
           render={(data: AccountBalanceData | null) => {
             const exceedsBalance = !!data
               && parseFloat(value) > parseFloat(data.displayMaximumSendableBalance);
             return (
               <ActionButtons>
-                <PrimaryButton
-                  onClick={() => send()}
-                  disabled={exceedsBalance}
-                >
-                  Pay €2
-                </PrimaryButton>
+                  <div>
+                    <PrimaryButton
+                      onClick={() => send()}
+                      disabled={exceedsBalance}
+                    >
+                      Pay €2
+                    </PrimaryButton>
+                    {exceedsBalance && <ButtonHint>Not enough money</ButtonHint>}
+                  </div>
                 <ActionButton>Decline</ActionButton>
               </ActionButtons>
             );
