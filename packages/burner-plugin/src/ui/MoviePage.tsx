@@ -78,13 +78,17 @@ const ImageBackdrop = styled.div<{ backgroundImage?: string }>`
 const { AccountBalance } = DataProviders;
 
 const getMovieMetadata = async (imdbId: string): Promise<MovieData> => {
-  const { title, poster_path, production_companies } = await fetch(
-    `https://api.themoviedb.org/3/movie/tt${imdbId}?api_key=${config.theMovieDbApiKey}`
-  ).then(resp => resp.json());
+  const [details, credits] = await Promise.all([
+    fetch(
+      `https://api.themoviedb.org/3/movie/tt${imdbId}?api_key=${config.theMovieDbApiKey}`
+    ).then(resp => resp.json()),
+    fetch(
+      `https://api.themoviedb.org/3/movie/tt${imdbId}/credits?api_key=${config.theMovieDbApiKey}`
+    ).then(resp => resp.json())
+  ]);
 
-  const { cast, crew } = await fetch(
-    `https://api.themoviedb.org/3/movie/tt${imdbId}/credits?api_key=${config.theMovieDbApiKey}`
-  ).then(resp => resp.json());
+  const { title, poster_path, production_companies } = details;
+  const { cast, crew } = credits;
 
   const productionCompanies = production_companies.slice(0, 2).map((c: any) => c.name);
   const actors = cast.slice(0, 3).map((a: any) => a.name);
