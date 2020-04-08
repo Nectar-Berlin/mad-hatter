@@ -26,7 +26,7 @@ enum IdTypes {
   IMDB,
 };
 
-type WhiteRabbitMessage = MessageEvent & {
+type WhiteRabbitMessage = {
   whiterabbit: {
     status: boolean;
   }
@@ -94,7 +94,7 @@ class WhiteRabbitClient {
 
     await this.ensureIFrame(this.url(tokenId));
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const messageHandler = (event) => {
         if (!event.data || !event.data.whiterabbit) return;
         const { whiterabbit } = event.data as WhiteRabbitMessage;
