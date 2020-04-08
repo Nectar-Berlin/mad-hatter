@@ -149,7 +149,7 @@ const MoviePage: React.FC<MoviePageContext> = ({ plugin, actions, assets, burner
   if (noSuchToken) { 
     return (
       <MessagePage>
-        Movie token is not registered on the network
+        Movie token is not registered on the network.
       </MessagePage>
     );
   }
