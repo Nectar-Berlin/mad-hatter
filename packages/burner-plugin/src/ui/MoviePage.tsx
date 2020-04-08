@@ -203,6 +203,10 @@ const MoviePage: React.FC<MoviePageContext> = ({ plugin, accounts, actions, asse
     actions.send(sendProps);
   };
 
+  const decline = () => {
+    window.parent.postMessage({ whiterabbit: { status: false } }, '*');
+  }
+
   return (
     <Page className={classes.moviePage}>
       <ImageBackdrop backgroundImage={movieData.posterUrl}>
@@ -242,7 +246,11 @@ const MoviePage: React.FC<MoviePageContext> = ({ plugin, accounts, actions, asse
                     </PrimaryButton>
                     {exceedsBalance && <ButtonHint>Not enough money</ButtonHint>}
                   </div>
-                <ActionButton>Decline</ActionButton>
+                <ActionButton
+                  onClick={() => decline()}
+                >
+                  Decline
+                </ActionButton>
               </ActionButtons>
             );
           }}

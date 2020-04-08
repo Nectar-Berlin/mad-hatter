@@ -28,6 +28,7 @@ enum IdTypes {
 
 class WhiteRabbitClient {
   private iframe: any = null;
+  private closeHandle: any = null;
   private host: string;
 
   constructor(host: string = 'https://wr.leap.rocks') {
@@ -36,6 +37,15 @@ class WhiteRabbitClient {
 
   private url(tokenId: string) {
     return `${this.host}/movie/${tokenId}`;
+  }
+
+  private ensureCloseHandle() {
+    if (this.closeHandle) return this.closeHandle;
+    this.closeHandle = document.createElement('div');
+    this.closeHandle.appendChild(document.createTextNode('×'));
+    this.closeHandle.style.cssText = closeHandleCss;
+    this.closeHandle.addEventListener('click', () => this.closeIFrame());
+    return this.closeHandle;
   }
 
   private ensureIFrame(url: string) {
@@ -57,18 +67,17 @@ class WhiteRabbitClient {
         document.body.removeChild(loader);
         resolve();
       });
-      const closeHandle = document.createElement('div');
-      closeHandle.appendChild(document.createTextNode('×'));
-      closeHandle.style.cssText = closeHandleCss;
-      closeHandle.addEventListener('click', () => {
-        document.body.removeChild(this.iframe);
-        document.body.removeChild(closeHandle);
-        this.iframe = null;
-      });
+      const closeHandle = this.ensureCloseHandle();
       
       document.body.appendChild(this.iframe);
       document.body.appendChild(closeHandle);
     });
+  }
+
+  closeIFrame() {
+    document.body.removeChild(this.iframe);
+    document.body.removeChild(this.closeHandle);
+    this.iframe = null;
   }
 
   requestPayment(imdbOrTokenId: string) {
