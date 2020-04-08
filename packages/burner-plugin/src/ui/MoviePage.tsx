@@ -200,10 +200,12 @@ const MoviePage: React.FC<MoviePageContext> = ({ plugin, accounts, actions, asse
       ether: value,
     };
 
-    plugin.pluginContext.onSent(({ receipt }) => {
-      const payload = { status: receipt.status };
-      window.parent.postMessage({ whiterabbit: payload }, '*');
-    })
+    if (window.parent) {
+      plugin.pluginContext.onSent(({ receipt }) => {
+        const payload = { status: receipt.status };
+        window.parent.postMessage({ whiterabbit: payload }, '*');
+      });
+    }
     actions.send(sendProps);
   };
 
