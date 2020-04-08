@@ -31,7 +31,7 @@ export default class WhiteRabbitPlugin implements Plugin {
 
   get pluginContext() {
     if (!this._pluginContext) {
-      throw new Error('Exchange not initialized');
+      throw new Error('WhiteRabbitPlugin is not initialized');
     }
     return this._pluginContext;
   }
