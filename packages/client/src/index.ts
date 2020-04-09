@@ -95,7 +95,7 @@ class WhiteRabbitClient {
     await this.ensureIFrame(this.url(tokenId));
 
     return new Promise((resolve) => {
-      const messageHandler = (event) => {
+      const messageHandler = (event: MessageEvent) => {
         if (!event.data || !event.data.whiterabbit) return;
         const { whiterabbit } = event.data as WhiteRabbitMessage;
         this.closeIFrame();
