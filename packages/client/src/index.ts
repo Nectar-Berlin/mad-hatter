@@ -26,8 +26,15 @@ enum IdTypes {
   IMDB,
 };
 
+type WhiteRabbitMessage = {
+  whiterabbit: {
+    status: boolean;
+  }
+};
+
 class WhiteRabbitClient {
   private iframe: any = null;
+  private closeHandle: any = null;
   private host: string;
 
   constructor(host: string = 'https://wr.leap.rocks') {
@@ -36,6 +43,15 @@ class WhiteRabbitClient {
 
   private url(tokenId: string) {
     return `${this.host}/movie/${tokenId}`;
+  }
+
+  private ensureCloseHandle() {
+    if (this.closeHandle) return this.closeHandle;
+    this.closeHandle = document.createElement('div');
+    this.closeHandle.appendChild(document.createTextNode('×'));
+    this.closeHandle.style.cssText = closeHandleCss;
+    this.closeHandle.addEventListener('click', () => this.closeIFrame());
+    return this.closeHandle;
   }
 
   private ensureIFrame(url: string) {
@@ -57,26 +73,38 @@ class WhiteRabbitClient {
         document.body.removeChild(loader);
         resolve();
       });
-      const closeHandle = document.createElement('div');
-      closeHandle.appendChild(document.createTextNode('×'));
-      closeHandle.style.cssText = closeHandleCss;
-      closeHandle.addEventListener('click', () => {
-        document.body.removeChild(this.iframe);
-        document.body.removeChild(closeHandle);
-        this.iframe = null;
-      });
+      const closeHandle = this.ensureCloseHandle();
       
       document.body.appendChild(this.iframe);
       document.body.appendChild(closeHandle);
     });
   }
 
-  requestPayment(imdbOrTokenId: string) {
+  closeIFrame() {
+    document.body.removeChild(this.iframe);
+    document.body.removeChild(this.closeHandle);
+    this.iframe = null;
+    this.closeHandle = null;
+  }
+
+  async requestPayment(imdbOrTokenId: string) {
     const tokenId = imdbOrTokenId.startsWith('tt') 
       ? WhiteRabbitClient.imdbToToken(imdbOrTokenId) 
       : imdbOrTokenId;
 
-    return this.ensureIFrame(this.url(tokenId));
+    await this.ensureIFrame(this.url(tokenId));
+
+    return new Promise((resolve) => {
+      const messageHandler = (event: MessageEvent) => {
+        if (!event.data || !event.data.whiterabbit) return;
+        const { whiterabbit } = event.data as WhiteRabbitMessage;
+        this.closeIFrame();
+        window.removeEventListener('message', messageHandler);
+        resolve({ status: whiterabbit.status });
+      };
+
+      window.addEventListener('message', messageHandler);
+    });
   }
 
   static imdbToToken(imdbId: string) {

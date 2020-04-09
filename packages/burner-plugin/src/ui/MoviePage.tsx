@@ -200,8 +200,18 @@ const MoviePage: React.FC<MoviePageContext> = ({ plugin, accounts, actions, asse
       ether: value,
     };
 
+    if (window.parent) {
+      plugin.pluginContext.onSent(({ receipt }) => {
+        const payload = { status: receipt.status };
+        window.parent.postMessage({ whiterabbit: payload }, '*');
+      });
+    }
     actions.send(sendProps);
   };
+
+  const decline = () => {
+    window.parent.postMessage({ whiterabbit: { status: false } }, '*');
+  }
 
   return (
     <Page className={classes.moviePage}>
@@ -242,7 +252,11 @@ const MoviePage: React.FC<MoviePageContext> = ({ plugin, accounts, actions, asse
                     </PrimaryButton>
                     {exceedsBalance && <ButtonHint>Not enough money</ButtonHint>}
                   </div>
-                <ActionButton>Decline</ActionButton>
+                <ActionButton
+                  onClick={() => decline()}
+                >
+                  Decline
+                </ActionButton>
               </ActionButtons>
             );
           }}
