@@ -4,20 +4,10 @@ import styled from 'styled-components';
 
 import { SendData, AccountBalanceData, PluginPageContext, ButtonProps, PageProps } from '@burner-wallet/types';
 import { withBurner, DataProviders } from '@burner-wallet/ui-core';
-import WhiteRabbitClient from '@whiterabbitjs/client';
+import { WhiteRabbitClient, MovieData, utils } from '@whiterabbitjs/client';
 
-import config from '../config.json';
 import WhiteRabbitPlugin from '../WhiteRabbitPlugin';
 const classes = require('./MoviePage.module.css');
-
-type MovieData = {
-  title: string;
-  posterUrl: string;
-  director: string;
-  producer: string;
-  actors: Array<string>;
-  productionCompanies: Array<string>;
-};
 
 type PageType = React.FC<PageProps & { className?: string }>;
 
@@ -77,34 +67,6 @@ const ImageBackdrop = styled.div<{ backgroundImage?: string }>`
 
 const { AccountBalance } = DataProviders;
 
-const getMovieMetadata = async (imdbId: string): Promise<MovieData> => {
-  const [details, credits] = await Promise.all([
-    fetch(
-      `https://api.themoviedb.org/3/movie/tt${imdbId}?api_key=${config.theMovieDbApiKey}`
-    ).then(resp => resp.json()),
-    fetch(
-      `https://api.themoviedb.org/3/movie/tt${imdbId}/credits?api_key=${config.theMovieDbApiKey}`
-    ).then(resp => resp.json())
-  ]);
-
-  const { title, poster_path, production_companies } = details;
-  const { cast, crew } = credits;
-
-  const productionCompanies = production_companies.slice(0, 2).map((c: any) => c.name);
-  const actors = cast.slice(0, 3).map((a: any) => a.name);
-  const producer = crew.find((c: any) => c.job === 'Producer').name;
-  const director = crew.find((c: any) => c.job === 'Director').name;
-
-  return {
-    title,
-    posterUrl: `https://image.tmdb.org/t/p/w500${poster_path}`,
-    director,
-    producer,
-    actors,
-    productionCompanies
-  };
-}
-
 const MoviePage: React.FC<MoviePageContext> = ({ plugin, accounts, actions, assets, burnerComponents, location }) => {
   const [movieData, setMovieData] = useState<MovieData>();
   const [movieOwner, setMovieOwner] = useState<string>();
@@ -118,7 +80,7 @@ const MoviePage: React.FC<MoviePageContext> = ({ plugin, accounts, actions, asse
   const [, tokenId] = pathname.match(/\/movie\/(\d+)\/?/i) || [];
   let imdbId: string = '';
   try {
-    imdbId = WhiteRabbitClient.tokenToImdb(tokenId);
+    imdbId = utils.tokenToImdb(tokenId);
   } catch (e) {
     console.error('Cannot decode tokenId', e);
   }
@@ -135,7 +97,7 @@ const MoviePage: React.FC<MoviePageContext> = ({ plugin, accounts, actions, asse
     if (!movieData) { 
       if (!isLoading) {
         setIsLoading(true);
-        getMovieMetadata(imdbId).then(data => {
+        new WhiteRabbitClient().getMovieDetails(imdbId).then(data => {
           setMovieData(data);
           setIsLoading(false);
         });

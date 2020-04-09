@@ -1,6 +1,6 @@
-import Client from './';
+import { utils } from './';
 
-const { imdbToToken, tokenToImdb } = Client;
+const { imdbToToken, tokenToImdb } = utils;
 
 test('#imdbToToken', () => {  
   expect(imdbToToken('tt8367814')).toEqual('2142160385');
