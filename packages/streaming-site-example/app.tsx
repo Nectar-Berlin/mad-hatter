@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import WhiteRabbitClient from '@whiterabbitjs/client';
+import { WhiteRabbitClient } from '@whiterabbitjs/client';
 
-const client = new WhiteRabbitClient(process.env.WR_WALLET_HOST);
+const client = new WhiteRabbitClient({ host: process.env.WR_WALLET_HOST });
 
 const StreamingApp = () => {
   const [paymentStatus, setPaymentStatus] = useState();

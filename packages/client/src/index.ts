@@ -26,6 +26,25 @@ enum IdTypes {
   IMDB,
 };
 
+type MovieData = {
+  title: string;
+  posterUrl: string;
+  director: string;
+  producer: string;
+  actors: Array<string>;
+  productionCompanies: Array<string>;
+};
+
+type WhiteRabbitClientConfig = {
+  host?: string;
+  theMovieDbApiKey?: string;
+}
+
+const defaultConfig: WhiteRabbitClientConfig = {
+  host: 'https://wr.leap.rocks',
+  theMovieDbApiKey: 'b1854cc7cd8f2e29da75a04a3c946e44'
+};
+
 type WhiteRabbitMessage = {
   whiterabbit: {
     status: boolean;
@@ -34,15 +53,15 @@ type WhiteRabbitMessage = {
 
 class WhiteRabbitClient {
   private iframe: any = null;
+  private config: WhiteRabbitClientConfig;
   private closeHandle: any = null;
-  private host: string;
 
-  constructor(host: string = 'https://wr.leap.rocks') {
-    this.host = host;
+  constructor(config?: WhiteRabbitClientConfig) {
+    this.config = Object.assign({}, defaultConfig, config);
   }
 
   private url(tokenId: string) {
-    return `${this.host}/movie/${tokenId}`;
+    return `${this.config.host}/movie/${tokenId}`;
   }
 
   private ensureCloseHandle() {
@@ -89,7 +108,7 @@ class WhiteRabbitClient {
 
   async requestPayment(imdbOrTokenId: string) {
     const tokenId = imdbOrTokenId.startsWith('tt') 
-      ? WhiteRabbitClient.imdbToToken(imdbOrTokenId) 
+      ? utils.imdbToToken(imdbOrTokenId) 
       : imdbOrTokenId;
 
     await this.ensureIFrame(this.url(tokenId));
@@ -107,17 +126,54 @@ class WhiteRabbitClient {
     });
   }
 
-  static imdbToToken(imdbId: string) {
-    return String((Number(imdbId.replace('tt', '')) << 8) + IdTypes.IMDB);
-  }
+  async getMovieDetails(imdbId: string): Promise<MovieData> {
+    const [details, credits] = await Promise.all([
+      fetch(
+        `https://api.themoviedb.org/3/movie/tt${imdbId}?api_key=${this.config.theMovieDbApiKey}`
+      ).then(resp => resp.json()),
+      fetch(
+        `https://api.themoviedb.org/3/movie/tt${imdbId}/credits?api_key=${this.config.theMovieDbApiKey}`
+      ).then(resp => resp.json())
+    ]);
 
-  static tokenToImdb(tokenId: string) {
+    const { title, poster_path, production_companies } = details;
+    const { cast, crew } = credits;
+
+    const productionCompanies = production_companies.slice(0, 2).map((c: any) => c.name);
+    const actors = cast.slice(0, 3).map((a: any) => a.name);
+    const producer = crew.find((c: any) => c.job === 'Producer').name;
+    const director = crew.find((c: any) => c.job === 'Director').name;
+
+    return {
+      title,
+      posterUrl: `https://image.tmdb.org/t/p/w500${poster_path}`,
+      director,
+      producer,
+      actors,
+      productionCompanies
+    };
+  }
+}
+
+const utils = {
+  imdbToToken: (imdbId: string) => {
+    return String((Number(imdbId.replace('tt', '')) << 8) + IdTypes.IMDB);
+  },
+
+  tokenToImdb: (tokenId: string) => {
     const type:number = Number(tokenId) % 256;
     if (type !== IdTypes.IMDB) {
       throw Error('Invalid type. Should be 1 for IMDB ID');
     }
     return String(Number(tokenId) >> 8);
   }
-}
+};
 
-export default WhiteRabbitClient;
+export {
+  WhiteRabbitClient,
+  utils,
+  WhiteRabbitMessage,
+  MovieData,
+  WhiteRabbitClientConfig,
+  IdTypes
+};
