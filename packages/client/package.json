@@ -14,7 +14,8 @@
   },
   "scripts": {
     "prebuild": "rm -rf dist",
-    "build": "tsc -d src/index.ts --outDir dist/",
+    "build": "tsc",
+    "start-local": "tsc -w",
     "prepublish": "npm run prebuild && npm run build",
     "test": "jest"
   },

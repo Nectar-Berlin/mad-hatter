@@ -2,10 +2,27 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { xdai } from '@burner-wallet/assets';
 import BurnerCore from '@burner-wallet/core';
+import ModernUI from '@burner-wallet/modern-ui';
 import { LocalSigner } from '@burner-wallet/core/signers';
 import { XDaiGateway, } from '@burner-wallet/core/gateways';
-import Exchange, { XDaiBridge } from '@burner-wallet/exchange';
-import ModernUI from '@burner-wallet/modern-ui';
+import { createGlobalStyle } from 'styled-components'
+import WhiteRabbitPlugin from '@whiterabbitjs/burner-plugin';
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    background: #000000 !important;
+  }
+
+  header,
+  header div {
+    color: rgba(255, 255, 255, 0.9) !important;
+  }
+
+  header button {
+    border: none;
+  }
+  
+`;
 
 const core = new BurnerCore({
   signers: [new LocalSigner()],
@@ -15,17 +32,18 @@ const core = new BurnerCore({
   assets: [xdai],
 });
 
-const exchange = new Exchange({
-  pairs: [new XDaiBridge()],
-});
+const WhiteRabbitWallet = () =>
+  <React.Fragment>
+    <GlobalStyle/>
+    <ModernUI
+      title="White Rabbit"
+      core={core}
+      plugins={[
+        new WhiteRabbitPlugin()
+      ]}
+    />
+  </React.Fragment>
 
-const BurnerWallet = () =>
-  <ModernUI
-    core={core}
-    plugins={[]}
-  />
 
-
-
-ReactDOM.render(<BurnerWallet />, document.getElementById('root'));
+ReactDOM.render(<WhiteRabbitWallet />, document.getElementById('root'));
 
