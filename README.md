@@ -18,7 +18,8 @@ npm run start-local
 
 | Package                                   | Description                                                             |
 | ----------------------------------------- | ----------------------------------------------------------------------- |
+| [`@whiterabbitjs/burner-plugin`](/packages/burner-plugin) | WhiteRabbit Plugin for Burner Wallet 2 |
 | [`@whiterabbitjs/client`](/packages/client) | Client JS library for streaming sites |
 | [`@whiterabbitjs/contracts`](/packages/contracts) | Smart contracts |
 | [`@whiterabbitjs/streaming-site-example`](/packages/streaming-site-example) | Example of the streaming site using Whiterabbit tech |
-| [`@whiterabbitjs/wallet`](/packages/wallet) | Payment wallet |
+| [`@whiterabbitjs/wallet`](/packages/wallet) | Payment wallet. Uses Burner Wallet 2 + WhiteRabbit Plugin |

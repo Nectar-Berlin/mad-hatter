@@ -1,2 +1,15 @@
 {
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "lib": [
+      "es6",
+      "dom"
+    ],
+    "module": "commonjs",
+    "rootDir": "src",
+    "outDir": "./dist"
+  },
+  "include": [
+    "./src"
+  ] 
 }

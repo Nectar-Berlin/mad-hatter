@@ -32,11 +32,11 @@ Arguments:
 
 `requestPayment(tokenId)`
 \
-Request a payment for the movie referenced by given WhiteRabbit token (TBD).
+Request a payment for the movie referenced by given WhiteRabbit token (TBD). Returns a Promise which resolves with the status of the payment.
 
 `requestPayment(imdbId)`
 \
-Request a payment by movie's imdb ID. Example: `tt8367814`.
+Request a payment by movie's imdb ID. Example: `tt8367814`. Returns a Promise which resolves with the status of the payment.
 
 `imdbToToken(imdbId)`
 \

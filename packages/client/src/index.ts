@@ -1,10 +1,10 @@
 
 const frameCss = `
-  height: 400px;
-  width: 300px;
+  height: 500px;
+  width: 400px;
   right: 0;
   position: absolute;
-  border:1px solid lightgray;
+  border: none;
   display: none;  
   top: 0;`;
 
@@ -14,28 +14,47 @@ const closeHandleCss = `
   background: lightgray;
   padding: 2px 5px;
   cursor: pointer ;
-  top: 401;`;
+  top: 501;`;
 
 const loaderCss = `
   display: flex;
   justify-content: center;
   align-items: center;`;
 
+enum IdTypes {
+  NA,
+  IMDB,
+};
+
+type WhiteRabbitMessage = {
+  whiterabbit: {
+    status: boolean;
+  }
+};
+
 class WhiteRabbitClient {
   private iframe: any = null;
+  private closeHandle: any = null;
   private host: string;
 
   constructor(host: string = 'https://wr.leap.rocks') {
-    console.log({ host });
     this.host = host;
   }
 
-  private url(tokenId) {
-    console.log(this.host);
-    return `${this.host}/title/${tokenId}`;
+  private url(tokenId: string) {
+    return `${this.host}/movie/${tokenId}`;
   }
 
-  private ensureIFrame(url) {
+  private ensureCloseHandle() {
+    if (this.closeHandle) return this.closeHandle;
+    this.closeHandle = document.createElement('div');
+    this.closeHandle.appendChild(document.createTextNode('×'));
+    this.closeHandle.style.cssText = closeHandleCss;
+    this.closeHandle.addEventListener('click', () => this.closeIFrame());
+    return this.closeHandle;
+  }
+
+  private ensureIFrame(url: string) {
     if (this.iframe) {
       return Promise.resolve(this.iframe);
     }
@@ -54,30 +73,50 @@ class WhiteRabbitClient {
         document.body.removeChild(loader);
         resolve();
       });
-      const closeHandle = document.createElement('div');
-      closeHandle.appendChild(document.createTextNode('×'));
-      closeHandle.style.cssText = closeHandleCss;
-      closeHandle.addEventListener('click', () => {
-        document.body.removeChild(this.iframe);
-        document.body.removeChild(closeHandle);
-        this.iframe = null;
-      });
+      const closeHandle = this.ensureCloseHandle();
       
       document.body.appendChild(this.iframe);
       document.body.appendChild(closeHandle);
     });
   }
 
-  requestPayment(imdbOrTokenId: string) {
-    const tokenId = imdbOrTokenId.startsWith('tt') 
-      ? this.imdbToToken(imdbOrTokenId) 
-      : imdbOrTokenId;
-
-    return this.ensureIFrame(this.url(tokenId));
+  closeIFrame() {
+    document.body.removeChild(this.iframe);
+    document.body.removeChild(this.closeHandle);
+    this.iframe = null;
+    this.closeHandle = null;
   }
 
-  imdbToToken(imdbId: string) {
-    return `01${imdbId.replace('tt', '').padStart(8, '0')}`;
+  async requestPayment(imdbOrTokenId: string) {
+    const tokenId = imdbOrTokenId.startsWith('tt') 
+      ? WhiteRabbitClient.imdbToToken(imdbOrTokenId) 
+      : imdbOrTokenId;
+
+    await this.ensureIFrame(this.url(tokenId));
+
+    return new Promise((resolve) => {
+      const messageHandler = (event: MessageEvent) => {
+        if (!event.data || !event.data.whiterabbit) return;
+        const { whiterabbit } = event.data as WhiteRabbitMessage;
+        this.closeIFrame();
+        window.removeEventListener('message', messageHandler);
+        resolve({ status: whiterabbit.status });
+      };
+
+      window.addEventListener('message', messageHandler);
+    });
+  }
+
+  static imdbToToken(imdbId: string) {
+    return String((Number(imdbId.replace('tt', '')) << 8) + IdTypes.IMDB);
+  }
+
+  static tokenToImdb(tokenId: string) {
+    const type:number = Number(tokenId) % 256;
+    if (type !== IdTypes.IMDB) {
+      throw Error('Invalid type. Should be 1 for IMDB ID');
+    }
+    return String(Number(tokenId) >> 8);
   }
 }
 

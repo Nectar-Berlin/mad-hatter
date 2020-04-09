@@ -1,18 +1,20 @@
 import Client from './';
 
-const client = new Client();
+const { imdbToToken, tokenToImdb } = Client;
 
-describe('#imdbToToken', () => {
-  test('should prefix with 01', () => {
-    expect(client.imdbToToken('tt18367814')).toEqual('0118367814');
+test('#imdbToToken', () => {  
+  expect(imdbToToken('tt8367814')).toEqual('2142160385');
+  expect(imdbToToken('8367814')).toEqual('2142160385');
+});
+
+describe('#tokenToImdb', () => {
+  test('should have 01 suffix', () => {
+    expect(tokenToImdb('2142160385')).toEqual('8367814');
   });
 
-  test('should pad ID to 8 bytes', () => {
-    expect(client.imdbToToken('tt8367814')).toEqual('0108367814');
-  });
-
-  test('should ignore imdb prefix', () => {
-    expect(client.imdbToToken('18367814')).toEqual('0118367814');
-    expect(client.imdbToToken('8367814')).toEqual('0108367814');
-  });
+  test('should thrown if type is not IMDB', () => {
+    expect(
+      () => tokenToImdb('2142160386')
+    ).toThrowError(new Error('Invalid type. Should be 1 for IMDB ID'));
+  })
 });
