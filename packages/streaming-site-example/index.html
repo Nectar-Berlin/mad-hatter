@@ -1,33 +1,48 @@
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
-  />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>Streaming Site Example</title>
-
-  <style>
-    body {
-      color: rgba(0,0,0,.65);
-      background: #f0f2f5;
-      font-size: 14px;
-      font-family: -apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,Hiragino Sans GB,Microsoft YaHei,Helvetica Neue,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-  </style>
-  
+	<meta charset="UTF-8">
+	<title>K5 Partner Streaming Site</title>
+	<meta name="description" content="">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="css/main.css">
+  <link href='https://vjs.zencdn.net/7.4.1/video-js.css' rel='stylesheet'>
 </head>
-
 <body>
-  <noscript>You need to enable JavaScript to run this app.</noscript>
-  <div id="root"></div>
-  <script src="./app.tsx"></script>
+<div id="app" v-cloak>
+	<header class="main-header">
+      <img class="logo" align="middle" width="20%" height="20%" src="images/logo.jpeg" alt="k5 logo">
+	</header>
+	<div class="container">
+		<main class="main-content">
+			<h1 class="main-headline">K5 Partner Streaming Site</h1>
+			<ul class="video-list">
+				<li v-for="video in videos" class="video-list-item">
+					<a href="javascript: void(0);" v-on:click="getPopup(video);">
+						<img :src="video.posterUrl" alt="">
+            <h4 class="video-item-name">{{video.title}}</h4>
+					</a>
+				</li>
+			</ul>
+		</main>
+  </div>
+<div class="popup" v-if="popup.on">
+	<div v-on:click="removePopup(this)" class="popup-overlay"></div>
+	<div class="popup-inner">
+		<div>
+			<video v-init-video controls autoplay>
+        <source type="video/mp4" :src="popup.video.video" />
+      </video>
+      <input type="hidden" name="video_title"   :value="popup.video.title">
+      <input type="hidden" name="video_poster"  :value="popup.video.posterUrl">
+		</div>
+  </div>
+</div>
+</div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ramda/0.25.0/ramda.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
+  <script src='https://vjs.zencdn.net/7.4.1/video.js'></script>
+	<script src="./js/app.ts"></script>
 </body>
-
 </html>

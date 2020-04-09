@@ -3,18 +3,22 @@ const frameCss = `
   height: 500px;
   width: 400px;
   right: 0;
-  position: absolute;
+  position: fixed;
+  background: black;
+  color: white;
   border: none;
-  display: none;  
+  display: none;
   top: 0;`;
 
 const closeHandleCss = `
   right: 0;
-  position: absolute;
-  background: lightgray;
+  position: fixed;
+  background: black;
+  font-size: 2rem;
   padding: 2px 5px;
-  cursor: pointer ;
-  top: 501;`;
+  cursor: pointer;
+  top: 500px;
+`;
 
 const loaderCss = `
   display: flex;
@@ -93,7 +97,7 @@ class WhiteRabbitClient {
         resolve();
       });
       const closeHandle = this.ensureCloseHandle();
-      
+
       document.body.appendChild(this.iframe);
       document.body.appendChild(closeHandle);
     });
@@ -107,8 +111,8 @@ class WhiteRabbitClient {
   }
 
   async requestPayment(imdbOrTokenId: string) {
-    const tokenId = imdbOrTokenId.startsWith('tt') 
-      ? utils.imdbToToken(imdbOrTokenId) 
+    const tokenId = imdbOrTokenId.startsWith('tt')
+      ? utils.imdbToToken(imdbOrTokenId)
       : imdbOrTokenId;
 
     await this.ensureIFrame(this.url(tokenId));
@@ -139,8 +143,8 @@ class WhiteRabbitClient {
     const { title, poster_path, production_companies } = details;
     const { cast, crew } = credits;
 
-    const productionCompanies = production_companies.slice(0, 2).map((c: any) => c.name);
-    const actors = cast.slice(0, 3).map((a: any) => a.name);
+    const productionCompanies = (production_companies || []).slice(0, 2).map((c: any) => c.name);
+    const actors = (cast || []).slice(0, 3).map((a: any) => a.name);
     const producer = crew.find((c: any) => c.job === 'Producer').name;
     const director = crew.find((c: any) => c.job === 'Director').name;
 
