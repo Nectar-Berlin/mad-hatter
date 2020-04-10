@@ -20,7 +20,7 @@ const client = new WhiteRabbitClient();
 client.requestPayment('tt8367814');
 ```
 
-## API
+## WhiteRabbitClient API
 
 ### `new WhiteRabbitClient(whiterabbitConfig)`
 
@@ -70,7 +70,13 @@ Response:
 }
 ```
 
-### `WhiteRabbitClient.imdbToToken(imdbId)`
+## Utils API
+
+```js
+import { utils } from '@whiterabbitjs/client';
+```
+
+### `utils.imdbToToken(imdbId)`
 
 Convert given `imdbId` to WhiteRabbit token.
 
@@ -78,7 +84,7 @@ Arguments:
 
 * `imdbId` — imdbID for the Movie.
 
-### `WhiteRabbitClient.tokenToImdb(tokenId)`
+### `utils.tokenToImdb(tokenId)`
 
 Convert given WhiteRabbit `tokenId` to imdbId.
 
