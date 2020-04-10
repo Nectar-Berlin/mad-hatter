@@ -33,6 +33,7 @@
   "scripts": {
     "css": "copyfiles -u 1 \"src/**/*.css\" dist/",
     "build": "tsc && npm run css",
+    "prepublish": "rm -rf dist/ && npm run build",
     "start-local": "tsc -w && npm run css"
   },
   "browserslist": {
