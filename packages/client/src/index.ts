@@ -1,3 +1,4 @@
+import merge from 'lodash.merge';
 
 const frameCss = `
   height: 500px;
@@ -61,7 +62,7 @@ class WhiteRabbitClient {
   private closeHandle: any = null;
 
   constructor(config?: WhiteRabbitClientConfig) {
-    this.config = Object.assign({}, defaultConfig, config);
+    this.config = merge({}, defaultConfig, config);
   }
 
   private url(tokenId: string) {
