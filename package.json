@@ -1,0 +1,13 @@
+{
+  "name": "whiterabbit",
+  "private": true,
+  "devDependencies": {
+    "lerna": "^3.20.2"
+  },
+  "scripts": {
+    "bootstrap": "npm install && lerna bootstrap",
+    "start-local": "CI=true lerna run --parallel start-local",
+    "start-example": "lerna run --parallel start-example",
+    "lerna": "lerna"
+  }
+}
